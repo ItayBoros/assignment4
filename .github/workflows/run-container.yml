@@ -57,10 +57,6 @@ jobs:
           pytest project4v2/tests/assn4_test.py -v > test-results.txt || echo "tests failed" >> log.txt
           echo "tests succeeded" >> log.txt
 
-      - name: Generate query result file
-        run: |
-          curl "http://localhost:5001/query?param=value" > query-results.txt
-
       - name: Upload log file
         uses: actions/upload-artifact@v4
         with:
