@@ -54,7 +54,7 @@ jobs:
 
       - name: Run tests and capture results
         run: |
-          pytest project4v2/tests/assn4_test.py -v > test-results.txt || echo "tests failed" >> log.txt
+          pytest tests/assn4_test.py -v > test-results.txt || echo "tests failed" >> log.txt
           echo "tests succeeded" >> log.txt
 
       - name: Upload log file
