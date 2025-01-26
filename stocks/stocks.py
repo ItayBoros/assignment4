@@ -28,6 +28,14 @@ def genID():
 def kill_container():
     os._exit(1)
 
+@app.route('/stocks', methods=['DELETE'])
+def delete_all_stocks():
+    try:
+        inv.delete_many({})
+        return '', 204
+    except Exception as e:
+        return jsonify({"server error": str(e)}), 500
+        
 @app.route('/stocks', methods=['POST'])
 def addStock():
     try:
