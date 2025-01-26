@@ -21,7 +21,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          cd ./stocks
+          cd ../../stocks
           docker build . --file Dockerfile --tag \
           ${{ secrets.DOCKER_USERNAME }}/stocks:latest
           docker tag ${{ secrets.DOCKER_USERNAME }}/stocks:latest \
