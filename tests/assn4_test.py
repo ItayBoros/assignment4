@@ -79,12 +79,12 @@ def test_post_stocks(setup_stocks):
     assert response1.status_code == 201
     assert response2.status_code == 201
     assert response3.status_code == 201
-    assert response1.json()["id"] != response2.json()["id"] != response3.json()["id"]
+    assert response1.json()["_id"] != response2.json()["_id"] != response3.json()["_id"]
 
 def test_get_stock_by_id():
     # Test 2: Retrieve stock1 by ID
     response = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock1)
-    stock_id = response.json()["id"]
+    stock_id = response.json()["_id"]
 
     get_response = requests.get(f"{STOCKS_SERVICE_URL}/stocks/{stock_id}")
     assert get_response.status_code == 200
@@ -103,9 +103,9 @@ def test_get_stock_value():
     response2 = requests.get(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
     response3 = requests.get(f"{STOCKS_SERVICE_URL}/stocks", json=stock3)
 
-    stock_id1 = response1.json()["id"]
-    stock_id2 = response2.json()["id"]
-    stock_id3 = response3.json()["id"]
+    stock_id1 = response1.json()["_id"]
+    stock_id2 = response2.json()["_id"]
+    stock_id3 = response3.json()["_id"]
 
     sv1 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id1}").json()
     sv2 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id2}").json()
@@ -121,9 +121,9 @@ def test_portfolio_value():
     response2 = requests.get(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
     response3 = requests.get(f"{STOCKS_SERVICE_URL}/stocks", json=stock3)
 
-    sv1 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{response1.json()['id']}").json()["stock_value"]
-    sv2 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{response2.json()['id']}").json()["stock_value"]
-    sv3 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{response3.json()['id']}").json()["stock_value"]
+    sv1 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{response1.json()['_id']}").json()["stock_value"]
+    sv2 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{response2.json()['_id']}").json()["stock_value"]
+    sv3 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{response3.json()['_id']}").json()["stock_value"]
 
     portfolio_value = requests.get(f"{STOCKS_SERVICE_URL}/portfolio-value").json()["portfolio_value"]
 
@@ -137,7 +137,7 @@ def test_post_invalid_stock():
 def test_delete_stock():
     # Test 7: Delete stock2 and verify the status code
     response = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
-    stock_id = response.json()["id"]
+    stock_id = response.json()["_id"]
 
     delete_response = requests.delete(f"{STOCKS_SERVICE_URL}/stocks/{stock_id}")
     assert delete_response.status_code == 200
@@ -146,7 +146,7 @@ def test_delete_stock():
 def test_get_deleted_stock():
     # Test 8: Ensure deleted stock2 is no longer accessible
     response = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
-    stock_id = response.json()["id"]
+    stock_id = response.json()["_id"]
 
     # Delete the stock first
     requests.delete(f"{STOCKS_SERVICE_URL}/stocks/{stock_id}")
