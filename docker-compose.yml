@@ -25,7 +25,7 @@ services:
     restart: always # always restart the container
     volumes:
       - type: bind
-        source: ./capitalGains # host directory
+        source: ./capital-gains # host directory
         target: /capital-gains # container directory
     environment:
       - FLASK_RUN_PORT=8080
