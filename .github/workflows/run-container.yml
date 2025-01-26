@@ -14,12 +14,12 @@ jobs:
 
     services:
       stocks-service:
-        image: ${{ secrets.DOCKER_USERNAME }}/stocks
+        image: itayboros/stocks
         ports:
           - 5001:8000
 
       capital-gains-service:
-        image: ${{ secrets.DOCKER_USERNAME }}/capital-gains
+        image: itayboros/capital-gains
         ports:
           - 5003:8000
 
