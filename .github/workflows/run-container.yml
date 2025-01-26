@@ -1,38 +1,76 @@
-name: pull-and-test-image-v2
+name: Python Tests
 
 on:
-  workflow_run:
-    workflows: ["Build and push Docker image"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  execute:
+  test-python:
     runs-on: ubuntu-latest
+
     services:
-      wordcontainer:
-        image: dannyteaching/wordsvr-v2:latest
+      stocks-service:
+        image: ${{ secrets.DOCKER_USERNAME }}/stocks
         ports:
-          - 8000:8000
+          - 5001:8000
+
+      capital-gains-service:
+        image: ${{ secrets.DOCKER_USERNAME }}/capital-gains
+        ports:
+          - 5003:8000
 
     steps:
-      - name: check if app is running
-        run: docker ps
+      - name: Check out code
+        uses: actions/checkout@v4
 
-      - name: create directory
-        run: mkdir -p mypath
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-      - name: curl
+      - name: Install dependencies
         run: |
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=wood')" >> mypath/results
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=wood')" >> mypath/results
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=silver')" >> mypath/results
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=silver')" >> mypath/results
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=throw')" >> mypath/results
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=throw')" >> mypath/results
-          echo "$(curl --location --request POST 'http://127.0.0.1:8000/words?word=coffee')" >> mypath/results
-          echo "$(curl --location --request GET 'http://127.0.0.1:8000/words')" >> mypath/results
-          echo "$(curl --location --request GET 'http://127.0.0.1:8000/words')" >> mypath/results
+          pip install --upgrade pip
+          pip install pytest requests
 
-      - name: curl results
-        run: cat mypath/results
+      - name: Log start time and setup log file
+        run: |
+          echo "$(date -Iminutes)" > log.txt
+          echo "Submitters: Your Name Here" >> log.txt
+          echo "Initializing log file..." >> log.txt
+
+      - name: Wait for services to start
+        run: |
+          sleep 10
+          echo "Container up and running" >> log.txt || echo "Container failed to run" >> log.txt
+
+      - name: Run tests and capture results
+        run: |
+          pytest project4v2/tests/assn4_test.py -v > test-results.txt || echo "tests failed" >> log.txt
+          echo "tests succeeded" >> log.txt
+
+      - name: Generate query result file
+        run: |
+          curl "http://localhost:5001/query?param=value" > query-results.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-file
+          path: log.txt
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: test-results.txt
+
+      - name: Upload query results
+        uses: actions/upload-artifact@v4
+        with:
+          name: query-results
+          path: query-results.txt      
