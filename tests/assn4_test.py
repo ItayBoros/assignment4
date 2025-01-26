@@ -26,6 +26,28 @@ stock3 = {
     "purchase date": "24-10-2024",
     "shares": 14
 }
+
+stock4 = { 
+    "name":"Tesla, Inc.", 
+    "symbol":"TSLA",
+    "purchase price":194.58,
+    "purchase date":"28-11-2022",
+    "shares":32
+}
+stock5 = { 
+    "name":"Microsoft Corporation", 
+    "symbol":"MSFT",
+    "purchase price":420.55,
+    "purchase date":"09-02-2024",
+    "shares":35
+}
+stock6 = { 
+    "name":"Intel Corporation", 
+    "symbol":"INTC",
+    "purchase price":19.15,
+    "purchase date":"13-01-2025",
+    "shares":10
+}
 stock7 = {
     "name": "Amazon.com, Inc.",
     "purchase price": 134.66,
