@@ -92,7 +92,8 @@ jobs:
         id: start-containers
         continue-on-error: true
         run: |
-          docker-compose up -d
+          docker compose build
+          docker compose up
           sleep 10
 
       - name: Check containers result (Line 4)
