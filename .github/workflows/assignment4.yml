@@ -67,16 +67,6 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: build
-    
-    services:
-      stocks-service:
-        image: ${{ secrets.DOCKER_USERNAME }}/stocks:latest
-        ports:
-          - 5001:8000
-      capital-gains-service:
-        image: ${{ secrets.DOCKER_USERNAME }}/capital-gains:latest
-        ports:
-          - 5003:8000
 
     steps:
       - name: Check out code
