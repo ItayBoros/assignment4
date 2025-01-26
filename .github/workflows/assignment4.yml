@@ -1,8 +1,11 @@
 name: Build and push Docker image
 
 on:
-  workflow_dispatch:
-
+  workflow_dispatch: # Allow manual trigger
+  push:              # Also allow automatic trigger on push
+    branches:
+      - main
+      
 jobs:
   build:
     runs-on: ubuntu-latest
