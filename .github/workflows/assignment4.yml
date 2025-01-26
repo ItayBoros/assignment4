@@ -21,10 +21,9 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          cd ../../stocks
           docker build . --file Dockerfile --tag \
-          ${{ secrets.DOCKER_USERNAME }}/stocks:latest
-          docker tag ${{ secrets.DOCKER_USERNAME }}/stocks:latest \
+          ${{ secrets.DOCKER_USERNAME }}/stocks
+          docker tag ${{ secrets.DOCKER_USERNAME }}/stocks \
           ${{ secrets.DOCKER_USERNAME }}/stocks:${{ env.DATE }}
 
       - name: Push to Docker Hub
