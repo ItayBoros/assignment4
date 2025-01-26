@@ -1,4 +1,4 @@
-name: Build and push Docker image
+name: Build and Test with Log
 
 on:
   workflow_dispatch:
@@ -6,45 +6,75 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    outputs:
+      build_status: ${{ steps.set-build-status.outputs.build_status }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Start log file (Lines 1 & 2)
+        id: start-log
+        run: |
+          echo "$(date -Iminutes)" > log.txt       # Line 1: the date/time
+          echo "Itay Boros, Noga Sapir Hen, Sagi Levhar" >> log.txt  # Line 2
+          
       - name: Log in Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set DATE
-        run: echo "DATE=$(date -I)" >> $GITHUB_ENV
-
-      - name: Build the Docker image
+      - name: Build Docker images
+        id: build-images
+        continue-on-error: true
         run: |
           cd stocks
-          docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/stocks
-          docker tag ${{ secrets.DOCKER_USERNAME }}/stocks ${{ secrets.DOCKER_USERNAME }}/stocks:${{ env.DATE }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/stocks .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/stocks ${{ secrets.DOCKER_USERNAME }}/stocks:latest
           cd ../capital-gains
-          docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/capital-gains
-          docker tag ${{ secrets.DOCKER_USERNAME }}/stocks ${{ secrets.DOCKER_USERNAME }}/capital-gains:${{ env.DATE }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/capital-gains .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/capital-gains ${{ secrets.DOCKER_USERNAME }}/capital-gains:latest
 
-      - name: Push to Docker Hub
+      - name: Check build result (Line 3)
+        id: set-build-status
+        if: always()  # Always run, even if previous step failed
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/stocks
-          docker push ${{ secrets.DOCKER_USERNAME }}/stocks:${{ env.DATE }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/capital-gains
-          docker push ${{ secrets.DOCKER_USERNAME }}/capital-gains:${{ env.DATE }}
+          if [ ${{ steps.build-images.outcome }} == "success" ]; then
+            echo "image successfully built" >> log.txt
+            echo "::set-output name=build_status::success"
+          else
+            echo "image not able to be built" >> log.txt
+            echo "::set-output name=build_status::fail"
+          fi
+
+      - name: Push images to Docker Hub
+        if: steps.set-build-status.outputs.build_status == 'success'
+        run: |
+          # Only push if build was successful
+          docker push ${{ secrets.DOCKER_USERNAME }}/stocks:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/capital-gains:latest
+
+      - name: Upload partial log
+        uses: actions/upload-artifact@v4
+        with:
+          name: partial-log
+          path: log.txt
+
+
   tests:
     runs-on: ubuntu-latest
 
+    needs: build
+    
     services:
       stocks-service:
-        image: itayboros/stocks
+        image: ${{ secrets.DOCKER_USERNAME }}/stocks:latest
         ports:
           - 5001:8000
-
       capital-gains-service:
-        image: itayboros/capital-gains
+        image: ${{ secrets.DOCKER_USERNAME }}/capital-gains:latest
         ports:
           - 5003:8000
 
@@ -52,9 +82,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Log in to Docker
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Download partial log
+        uses: actions/download-artifact@v4
+        with:
+          name: partial-log
+          path: .
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -66,23 +98,38 @@ jobs:
           pip install --upgrade pip
           pip install pytest requests
 
-      - name: Log start time and setup log file
+      - name: Start containers 
+        id: start-containers
+        continue-on-error: true
         run: |
-          echo "$(date -Iminutes)" > log.txt
-          echo "Submitters: Your Name Here" >> log.txt
-          echo "Initializing log file..." >> log.txt
-
-      - name: Wait for services to start
-        run: |
+          docker-compose up -d
           sleep 10
-          echo "Container up and running" >> log.txt || echo "Container failed to run" >> log.txt
 
-      - name: Run tests and capture results
+      - name: Check containers result (Line 4)
+        if: always()
         run: |
-          pytest tests/assn4_test.py -v > test-results.txt || echo "tests failed" >> log.txt
-          echo "tests succeeded" >> log.txt
+          if [ ${{ steps.start-containers.outcome }} == "success" ]; then
+            echo "Container up and running" >> log.txt
+          else
+            echo "Container failed to run" >> log.txt
+          fi
 
-      - name: Upload log file
+      - name: Run tests
+        id: run-tests
+        continue-on-error: true
+        run: |
+          pytest tests/assn4_test.py -v > test-results.txt
+
+      - name: Check tests result (Line 5)
+        if: always()
+        run: |
+          if [ ${{ steps.run-tests.outcome }} == "success" ]; then
+            echo "tests succeeded" >> log.txt
+          else
+            echo "tests failed" >> log.txt
+          fi
+
+      - name: Upload final log
         uses: actions/upload-artifact@v4
         with:
           name: log-file
