@@ -16,7 +16,7 @@ def get_capital_gains():
 
         # Fetch stocks based on the portfolio
         stocks = []
-        response = requests.get("http://stocks-app:8000/stocks")  # Service name + path
+        response = requests.get("http://stocks:8000/stocks")  # Service name + path
         stocks = response.json()
         # Filter stocks based on query parameters
         if numsharesgt is not None:
