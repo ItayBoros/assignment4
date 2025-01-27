@@ -178,28 +178,29 @@ jobs:
             {"name":"Intel Corporation", "symbol":"INTC", "purchase_price":19.15, "purchase_date":"13-01-2025", "shares":10}
           ]
 
-          # Post all stocks
           for stock in stocks:
-            response = requests.post('http://localhost:5001/stocks', json=stock)
-            print(f"Posted {stock['symbol']}: {response.status_code}")
+              response = requests.post('http://localhost:5001/stocks', json=stock)
+              print(f"POST /stocks Response: {response.status_code}, {response.json()}")
 
           # Process query.txt
           with open('query.txt', 'r') as f:
-            queries = f.readlines()
+              queries = f.readlines()
 
           with open('response.txt', 'w') as f:
-            for query in queries:
-              service, qs = query.strip().split(':')
-              
-              if service == 'stocks':
-                url = f'http://localhost:5001/stocks?{qs}'
-              else:
-                url = f'http://localhost:5003/capital-gains?{qs}'
-                
-              response = requests.get(url)
-              
-              f.write(f'query: {qs}\n')
-              f.write(f'response: {json.dumps(response.json(), indent=2)}\n')
+              for query in queries:
+                  service, qs = query.strip().split(':')
+                  print(f"Processing query: {service}, {qs}")
+
+                  if service == 'stocks':
+                      url = f'http://localhost:5001/stocks?{qs}'
+                  else:
+                      url = f'http://localhost:5003/capital-gains?{qs}'
+
+                  response = requests.get(url)
+                  print(f"GET {url} Response: {response.status_code}, {response.text}")
+
+                  f.write(f'query: {qs}\n')
+                  f.write(f'response: {json.dumps(response.json(), indent=2)}\n')
           EOF
 
       - name: Upload response file
