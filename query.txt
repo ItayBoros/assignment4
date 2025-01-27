@@ -1,0 +1,8 @@
+stocks:shares=7
+stocks:shares=19
+stocks:symbol=NVDA
+stocks:symbol=AAPL
+capital-gains:symbol=MSFT
+capital-gains:symbol=TSLA
+stocks:purchase_date=18-06-2024
+capital-gains:purchase_date=28-11-2022
