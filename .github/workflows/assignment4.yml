@@ -188,6 +188,9 @@ jobs:
               queries = f.readlines()
 
           with open('response.txt', 'w') as f:
+              if ':' not in line:
+                  print(f"Warning: line has no colon -> {line}")
+                  continue
               for query in queries:
                   service, qs = query.strip().split(':')
                   print(f"Processing query: {service}, {qs}")
