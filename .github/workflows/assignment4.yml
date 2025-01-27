@@ -170,12 +170,12 @@ jobs:
           
           # Stock data from assignment
           stocks = [
-            {"name":"NVIDIA Corporation", "symbol":"NVDA", "purchase_price":134.66, "purchase_date":"18-06-2024", "shares":7},
-            {"name":"Apple Inc.", "symbol":"AAPL", "purchase_price":183.63, "purchase_date":"22-02-2024", "shares":19},
-            {"name":"Alphabet Inc.", "symbol":"GOOG", "purchase_price":140.12, "purchase_date":"24-10-2024", "shares":14},
-            {"name":"Tesla, Inc.", "symbol":"TSLA", "purchase_price":194.58, "purchase_date":"28-11-2022", "shares":32},
-            {"name":"Microsoft Corporation", "symbol":"MSFT", "purchase_price":420.55, "purchase_date":"09-02-2024", "shares":35},
-            {"name":"Intel Corporation", "symbol":"INTC", "purchase_price":19.15, "purchase_date":"13-01-2025", "shares":10}
+            {"name":"NVIDIA Corporation", "symbol":"NVDA", "purchase price":134.66, "purchase date":"18-06-2024", "shares":7},
+            {"name":"Apple Inc.", "symbol":"AAPL", "purchase price":183.63, "purchase date":"22-02-2024", "shares":19},
+            {"name":"Alphabet Inc.", "symbol":"GOOG", "purchase price":140.12, "purchase date":"24-10-2024", "shares":14},
+            {"name":"Tesla, Inc.", "symbol":"TSLA", "purchase price":194.58, "purchase date":"28-11-2022", "shares":32},
+            {"name":"Microsoft Corporation", "symbol":"MSFT", "purchase price":420.55, "purchase date":"09-02-2024", "shares":35},
+            {"name":"Intel Corporation", "symbol":"INTC", "purchase price":19.15, "purchase date":"13-01-2025", "shares":10}
           ]
 
           for stock in stocks:
