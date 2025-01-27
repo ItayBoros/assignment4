@@ -101,6 +101,12 @@ def getStocks():
     try:
         #moves the filters into dic
         query = request.args.to_dict()
+
+        for key in query:
+            if key == "shares":
+                query[key] = int(query[key])  # Convert shares to integer
+            elif key == "purchase price":
+                query[key] = float(query[key])
         
         #in case there is no filters, return all
         if not query:
