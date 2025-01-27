@@ -62,7 +62,6 @@ jobs:
           name: partial-log
           path: log.txt
 
-
   tests:
     runs-on: ubuntu-latest
 
@@ -135,3 +134,76 @@ jobs:
         with:
           name: pytest-results
           path: test-results.txt
+
+  query:
+    needs: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download log
+        uses: actions/download-artifact@v4
+        with:
+          name: partial-log
+          path: .
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Start containers
+        run: |
+          docker compose up -d
+          sleep 10
+
+      - name: Execute queries
+        run: |
+          python - <<EOF
+          import requests
+          import json
+          
+          # Stock data from assignment
+          stocks = [
+            {"name":"NVIDIA Corporation", "symbol":"NVDA", "purchase_price":134.66, "purchase_date":"18-06-2024", "shares":7},
+            {"name":"Apple Inc.", "symbol":"AAPL", "purchase_price":183.63, "purchase_date":"22-02-2024", "shares":19},
+            {"name":"Alphabet Inc.", "symbol":"GOOG", "purchase_price":140.12, "purchase_date":"24-10-2024", "shares":14},
+            {"name":"Tesla, Inc.", "symbol":"TSLA", "purchase_price":194.58, "purchase_date":"28-11-2022", "shares":32},
+            {"name":"Microsoft Corporation", "symbol":"MSFT", "purchase_price":420.55, "purchase_date":"09-02-2024", "shares":35},
+            {"name":"Intel Corporation", "symbol":"INTC", "purchase_price":19.15, "purchase_date":"13-01-2025", "shares":10}
+          ]
+
+          # Post all stocks
+          for stock in stocks:
+            response = requests.post('http://localhost:5001/stocks', json=stock)
+            print(f"Posted {stock['symbol']}: {response.status_code}")
+
+          # Process query.txt
+          with open('query.txt', 'r') as f:
+            queries = f.readlines()
+
+          with open('response.txt', 'w') as f:
+            for query in queries:
+              service, qs = query.strip().split(':')
+              
+              if service == 'stocks':
+                url = f'http://localhost:5001/stocks?{qs}'
+              else:
+                url = f'http://localhost:5003/capital-gains?{qs}'
+                
+              response = requests.get(url)
+              
+              f.write(f'query: {qs}\n')
+              f.write(f'response: {json.dumps(response.json(), indent=2)}\n')
+          EOF
+
+      - name: Upload response file
+        uses: actions/upload-artifact@v4
+        with:
+          name: query-responses
+          path: response.txt
