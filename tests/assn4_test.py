@@ -136,9 +136,9 @@ def test_portfolio_value(setup_stocks):
     
     assert portfolio_response.status_code == 200
     portfolio_value = portfolio_response.json()["portfolio value"]
-    sv1 = sv1_response["ticker"]
-    sv2 = sv2_response["ticker"]
-    sv3 = sv3_response["ticker"]
+    sv1 = sv1_response["stock value"]
+    sv2 = sv2_response["stock value"]
+    sv3 = sv3_response["stock value"]
     
     # Validate portfolio value is a positive number
     assert 0.97*portfolio_value <= (sv1 + sv2 + sv3) 
