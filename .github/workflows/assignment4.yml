@@ -1,4 +1,4 @@
-name: Build and Test with Log
+name: assignment4
 
 on:
   workflow_dispatch:
