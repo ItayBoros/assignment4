@@ -102,6 +102,10 @@ jobs:
       - name: Check containers result (Line 4)
         if: always()
         run: |
+          if [ "${{ needs.build.outputs.build_status }}" != "success" ]; then
+            exit 0
+          fi
+          
           if [ ${{ steps.start-containers.outcome }} == "success" ]; then
             echo "Container up and running" >> log.txt
           else
@@ -126,6 +130,14 @@ jobs:
       - name: Check tests result (Line 5)
         if: always()
         run: |
+          if [ "${{ needs.build.outputs.build_status }}" != "success" ]; then
+            exit 0
+          fi
+          
+          if [ ${{ steps.start-containers.outcome }} != "success" ]; then
+            exit 0
+          fi
+          
           if [ ${{ steps.run-tests.outcome }} == "success" ]; then
             echo "tests succeeded" >> log.txt
           else
