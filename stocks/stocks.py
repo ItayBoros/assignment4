@@ -28,7 +28,7 @@ def genID():
 def kill_container():
     os._exit(1)
 
-@app.route('/stocks', methods=['DELETE'])
+@app.route('/stocks1', methods=['DELETE'])
 def delete_all_stocks():
     try:
         inv.delete_many({})
