@@ -112,7 +112,7 @@ jobs:
         id: run-tests
         continue-on-error: true
         run: |
-          pytest tests/assn4_test.py -v > assn4_test_results.txt
+          pytest -v tests/assn4_test.py  > assn4_test_results.txt
 
       - name: Check tests result (Line 5)
         if: always()
