@@ -177,7 +177,7 @@ jobs:
             {"name":"Microsoft Corporation", "symbol":"MSFT", "purchase price":420.55, "purchase date":"09-02-2024", "shares":35},
             {"name":"Intel Corporation", "symbol":"INTC", "purchase price":19.15, "purchase date":"13-01-2025", "shares":10}
           ]
-          requests.delete('http://localhost:5001/stocks')
+          requests.delete('http://localhost:5001/stocks1')
           
           for stock in stocks:
             response = requests.post('http://localhost:5001/stocks', json=stock)
