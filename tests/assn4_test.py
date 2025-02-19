@@ -126,11 +126,19 @@ def test_portfolio_value(setup_stocks):
     requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock3)
 
     portfolio_response = requests.get(f"{STOCKS_SERVICE_URL}/portfolio-value")
+    sv1_response = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id1}").json()
+    sv2_response = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id2}").json()
+    sv3_response = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id3}").json()
+    
     assert portfolio_response.status_code == 200
     portfolio_value = portfolio_response.json()["portfolio value"]
-
+    sv1 = sv1_response["ticker"]
+    sv2 = sv2_response["ticker"]
+    sv3 = sv3_response["ticker"]
+    
     # Validate portfolio value is a positive number
-    assert portfolio_value > 0
+    assert 0.97*portfolio_value <= (sv1 + sv2 + sv3) 
+    assert 1.03*portfolio_value >= (sv1 + sv2 + sv3) 
 
 def test_post_invalid_stock(setup_stocks):
     # Test 6: Add an invalid stock (missing 'symbol') and expect 400
