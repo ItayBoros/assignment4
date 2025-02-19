@@ -133,7 +133,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-results
-          path: assn4-test-results.txt
+          path: assn4_test_results.txt
 
   query:
     needs: tests
