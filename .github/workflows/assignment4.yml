@@ -62,7 +62,7 @@ jobs:
           name: partial-log
           path: log.txt
 
-  tests:
+  test:
     runs-on: ubuntu-latest
 
     needs: build
@@ -157,7 +157,7 @@ jobs:
           path: assn4_test_results.txt
 
   query:
-    needs: tests
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
