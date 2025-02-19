@@ -216,5 +216,5 @@ jobs:
       - name: Upload response file
         uses: actions/upload-artifact@v4
         with:
-          name: query-responses
+          name: response.txt
           path: response.txt
