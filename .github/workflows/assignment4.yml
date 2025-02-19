@@ -112,7 +112,7 @@ jobs:
         id: run-tests
         continue-on-error: true
         run: |
-          pytest -v tests/assn4_test.py  > assn4_test_results.txt
+          pytest tests/assn4_test.py -v  > assn4_test_results.txt
 
       - name: Check tests result (Line 5)
         if: always()
@@ -126,13 +126,13 @@ jobs:
       - name: Upload final log
         uses: actions/upload-artifact@v4
         with:
-          name: log-file
+          name: log.txt
           path: log.txt
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-results
+          name: assn4_test_results.txt
           path: assn4_test_results.txt
 
   query:
