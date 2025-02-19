@@ -229,7 +229,7 @@ jobs:
                   response = requests.get(url)
                   print(f"GET {url} Response: {response.status_code}, {response.text}")
 
-                  f.write(f'query:{service}:{qs}\n')
+                  f.write(f'query: {service}: {qs}\n')
                   f.write(f'response: {json.dumps(response.json(), indent=2)}\n')
           EOF
 
