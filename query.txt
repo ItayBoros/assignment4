@@ -1,8 +1,0 @@
-stocks:shares=7
-stocks:shares=19
-stocks:symbol=NVDA
-stocks:symbol=AAPL
-capital-gains:numshareslt=10
-capital-gains:numsharesgt=10
-
-
