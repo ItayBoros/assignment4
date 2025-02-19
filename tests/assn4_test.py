@@ -79,13 +79,13 @@ def test_post_stocks(setup_stocks):
     assert response1.status_code == 201
     assert response2.status_code == 201
     assert response3.status_code == 201
-    assert response1.json()["_id"] != response2.json()["_id"] != response3.json()["_id"]
+    assert response1.json()["id"] != response2.json()["id"] != response3.json()["id"]
 
 def test_get_stock_by_id(setup_stocks):
     # Test 2: Retrieve stock1 by ID
     response = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock1)
     assert response.status_code == 201
-    stock_id = response.json()["_id"]
+    stock_id = response.json()["id"]
 
     get_response = requests.get(f"{STOCKS_SERVICE_URL}/stocks/{stock_id}")
     assert get_response.status_code == 200
@@ -107,9 +107,9 @@ def test_get_stock_value(setup_stocks):
     response2 = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
     response3 = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock3)
 
-    stock_id1 = response1.json()["_id"]
-    stock_id2 = response2.json()["_id"]
-    stock_id3 = response3.json()["_id"]
+    stock_id1 = response1.json()["id"]
+    stock_id2 = response2.json()["id"]
+    stock_id3 = response3.json()["id"]
 
     sv1 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id1}").json()
     sv2 = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id2}").json()
@@ -141,7 +141,7 @@ def test_delete_stock(setup_stocks):
     # Test 7: Delete stock2 and verify the status code
     response = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
     assert response.status_code == 201
-    stock_id = response.json()["_id"]
+    stock_id = response.json()["id"]
 
     delete_response = requests.delete(f"{STOCKS_SERVICE_URL}/stocks/{stock_id}")
     assert delete_response.status_code == 204
@@ -150,8 +150,8 @@ def test_get_deleted_stock(setup_stocks):
     # Test 8: Ensure deleted stock2 is no longer accessible
     response = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
     assert response.status_code == 201
-    stock_id = response.json()["_id"]
-
+    stock_id = response.json()["id"]
+    
     # Delete the stock first
     delete_response = requests.delete(f"{STOCKS_SERVICE_URL}/stocks/{stock_id}")
     assert delete_response.status_code == 204
