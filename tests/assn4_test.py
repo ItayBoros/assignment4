@@ -121,9 +121,13 @@ def test_get_stock_value(setup_stocks):
 
 def test_portfolio_value(setup_stocks):
     # Test 5: Verify portfolio value
-    requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock1)
-    requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
-    requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock3)
+    response1 = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock1)
+    response2 = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock2)
+    response3 = requests.post(f"{STOCKS_SERVICE_URL}/stocks", json=stock3)
+
+    stock_id1 = response1.json()["id"]
+    stock_id2 = response2.json()["id"]
+    stock_id3 = response3.json()["id"]
 
     portfolio_response = requests.get(f"{STOCKS_SERVICE_URL}/portfolio-value")
     sv1_response = requests.get(f"{STOCKS_SERVICE_URL}/stock-value/{stock_id1}").json()
