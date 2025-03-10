@@ -1,4 +1,4 @@
-# FROM python:alpine3.12
+FROM python:alpine3.12
 WORKDIR ./app
 COPY stocks.py .
 RUN pip install Flask requests pymongo
