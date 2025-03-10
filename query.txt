@@ -1,0 +1,5 @@
+stocks:symbol=NVDA
+stocks:shares=7
+capital-gains:symbol=AAPL
+stocks:shares=100
+capital-gains:unknownParam=1
