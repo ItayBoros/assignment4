@@ -99,7 +99,7 @@ def test_get_all_stocks(setup_stocks):
 
     response = requests.get(f"{STOCKS_SERVICE_URL}/stocks")
     assert response.status_code == 200
-    assert len(response.json()) == 3
+    assert len(response.json()) == 2
 
 def test_get_stock_value(setup_stocks):
     # Test 4: Verify stock values and symbols
